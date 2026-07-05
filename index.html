@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>インスタ運用チェックリスト 2026</title>
+<style>
+  :root {
+    --grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    --color-bg: #faf7f5;
+    --color-card: #ffffff;
+    --color-text: #2b2b2b;
+    --color-sub: #857c76;
+    --color-accent: #dc2743;
+    --color-done: #2d9d5f;
+    --color-warn: #b45309;
+    --color-warn-bg: #fff7ed;
+    --color-detail-bg: #f7f2ef;
+    --radius: 14px;
+    --shadow: 0 2px 10px rgba(0,0,0,.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    padding-bottom: 40px;
+    line-height: 1.5;
+  }
+  header {
+    background: var(--grad);
+    color: #fff;
+    padding: 20px 16px 16px;
+    text-align: center;
+  }
+  header h1 { font-size: 1.12rem; letter-spacing: .04em; }
+  header p { font-size: .7rem; opacity: .92; margin-top: 4px; }
+
+  .tabs {
+    display: flex; gap: 6px;
+    padding: 10px 12px 4px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    position: sticky; top: 0; z-index: 10;
+    background: var(--color-bg);
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto; border: none;
+    background: #fff; color: var(--color-sub);
+    font-size: .78rem; font-weight: 700;
+    padding: 9px 13px; border-radius: 999px;
+    box-shadow: var(--shadow); cursor: pointer; white-space: nowrap;
+  }
+  .tab.active { background: var(--grad); color: #fff; }
+
+  main { max-width: 640px; margin: 0 auto; padding: 8px 14px; }
+  section { display: none; }
+  section.show { display: block; animation: fade .18s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px);} to { opacity:1; transform:none;} }
+
+  .intro { font-size: .74rem; color: var(--color-sub); background: #fff; border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 11px 13px; margin: 8px 2px 4px; line-height: 1.6; }
+
+  .progress-wrap { display: flex; align-items: center; gap: 10px; margin: 12px 2px 4px; }
+  .progress-bar { flex: 1; height: 8px; background: #eee2dc; border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: var(--grad); border-radius: 99px; transition: width .3s ease; }
+  .progress-label { font-size: .75rem; font-weight: 700; color: var(--color-accent); min-width: 3.2em; text-align: right; }
+
+  .group-title { font-size: .77rem; font-weight: 700; color: var(--color-sub); margin: 18px 4px 8px; letter-spacing: .05em; }
+  .card { background: var(--color-card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 10px; }
+
+  .item { border-bottom: 1px solid #f3ece8; }
+  .card .item:last-child { border-bottom: none; }
+  .item-main { display: flex; gap: 12px; align-items: flex-start; padding: 13px 14px 10px; cursor: pointer; }
+  .item-main input { display: none; }
+  .checkbox { flex: 0 0 22px; height: 22px; margin-top: 1px; border: 2px solid #d9cfc9; border-radius: 7px;
+    display: grid; place-items: center; transition: all .15s ease; }
+  .checkbox::after { content: "✓"; color: #fff; font-size: 14px; font-weight: 800; transform: scale(0); transition: transform .15s ease; }
+  .item-main input:checked + .checkbox { background: var(--color-done); border-color: var(--color-done); }
+  .item-main input:checked + .checkbox::after { transform: scale(1); }
+  .item-body { flex: 1; }
+  .item-title { display: block; font-size: .89rem; font-weight: 600; line-height: 1.45; }
+  .item-note { display: block; font-size: .75rem; color: var(--color-sub); line-height: 1.55; margin-top: 3px; }
+  .item-main input:checked ~ .item-body .item-title { color: #b7aaa2; text-decoration: line-through; }
+
+  .badge { display: inline-block; font-size: .61rem; font-weight: 700; padding: 1px 7px; border-radius: 99px; margin-left: 5px; vertical-align: 1px; white-space: nowrap; }
+  .badge.new { background: #fdecef; color: var(--color-accent); }
+  .badge.law { background: #eef4fd; color: #2563a8; }
+
+  .detail-toggle { margin: 0 0 11px 48px; border: none; background: none; color: var(--color-accent);
+    font-size: .74rem; font-weight: 700; cursor: pointer; padding: 2px 0; font-family: inherit; }
+  .detail { display: none; margin: 0 14px 13px 48px; padding: 11px 13px; background: var(--color-detail-bg);
+    border-radius: 10px; font-size: .77rem; line-height: 1.7; color: #4a423c; }
+  .detail.open { display: block; }
+  .detail b { color: var(--color-accent); }
+  .detail .path { display: inline-block; background: #fff; border: 1px solid #e5dcd6; border-radius: 6px;
+    padding: 1px 6px; font-size: .72rem; margin: 2px 0; }
+
+  .reset-btn { display: block; width: 100%; margin: 14px 0 6px; padding: 12px; border: none; border-radius: var(--radius);
+    background: #fff; color: var(--color-accent); font-size: .82rem; font-weight: 700; box-shadow: var(--shadow); cursor: pointer; }
+  .daily-date { font-size: .74rem; color: var(--color-sub); text-align: center; margin: 8px 0 2px; }
+  .all-done { display: none; text-align: center; font-size: .9rem; font-weight: 700; color: var(--color-done); padding: 14px 0 4px; }
+  .all-done.show { display: block; }
+  .foot-note { font-size: .72rem; color: var(--color-sub); text-align: center; margin-top: 10px; line-height: 1.6; }
+
+  /* 早見表 */
+  .ref-title { font-size: .9rem; font-weight: 700; margin: 20px 4px 8px; display: flex; align-items: center; gap: 6px; }
+  .ref-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 6px 4px; margin-bottom: 6px; overflow: hidden; }
+  table.ref { width: 100%; border-collapse: collapse; font-size: .78rem; }
+  table.ref th, table.ref td { text-align: left; padding: 9px 12px; border-bottom: 1px solid #f3ece8; vertical-align: top; }
+  table.ref tr:last-child td { border-bottom: none; }
+  table.ref th { color: var(--color-sub); font-weight: 700; font-size: .72rem; background: #faf7f5; }
+  table.ref td:first-child { font-weight: 600; white-space: nowrap; }
+  table.ref .hl { color: var(--color-accent); font-weight: 700; }
+  .ref-note { font-size: .73rem; color: var(--color-sub); line-height: 1.65; margin: 6px 6px 4px; }
+
+  /* NG集 */
+  .ng-card { background: var(--color-warn-bg); border-left: 4px solid var(--color-warn); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px; }
+  .ng-card h3 { font-size: .85rem; color: var(--color-warn); margin-bottom: 3px; }
+  .ng-card p { font-size: .77rem; line-height: 1.65; }
+  .rescue { background: #eefaf2; border-left-color: var(--color-done); }
+  .rescue h3 { color: var(--color-done); }
+
+  footer { text-align: center; font-size: .67rem; color: var(--color-sub); margin-top: 26px; padding: 0 20px; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📸 インスタ運用チェックリスト</h1>
+  <p>2026年 新ルール対応版 — これ1つで開設から毎日まで完結</p>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="setup">🚀 開設</button>
+  <button class="tab" data-tab="post">✍️ 投稿前</button>
+  <button class="tab" data-tab="daily">☀️ 毎日</button>
+  <button class="tab" data-tab="weekly">📊 週1回</button>
+  <button class="tab" data-tab="waza">💎 公式ワザ</button>
+  <button class="tab" data-tab="ref">📐 早見表</button>
+  <button class="tab" data-tab="ng">⚠️ NG・救済</button>
+</nav>
+
+<main>
+  <section id="setup" class="show"></section>
+  <section id="post"></section>
+  <section id="daily"></section>
+  <section id="weekly"></section>
+  <section id="waza"></section>
+  <section id="ref"></section>
+  <section id="ng"></section>
+</main>
+
+<footer>
+  参考：Instagram公式ヘルプセンター／Meta公式発表（2025年12月ハッシュタグ上限5個・2026年5月オリジナル優遇）／Instagram代表 A.モセリ氏の公表シグナル／消費者庁ステマ規制（2023年10月施行）<br>
+  チェック状態はこの端末のブラウザに保存されます
+</footer>
+
+<script>
+/* ================= データ ================= */
+const CHECKLISTS = {
+  setup: { footer: '', groups: [
+    { title: 'STEP 1｜アカウントの土台', items: [
+      { key:'s1', title:'ユーザーネーム（@ID）を決める', note:'半角英数字と「.」「_」のみ・最大30文字。短く覚えやすく',
+        detail:'使えるのは<b>半角英数字・ピリオド(.)・アンダースコア(_)だけ</b>。スペース・日本語・その他記号は不可。後から変更できるが、頻繁に変えると検索やタグ付けで見つけられなくなる。<br>例：<span class="path">roy.care.diary</span><span class="path">miyagi_roy</span>' },
+      { key:'s2', title:'プロアカウントに切り替える（無料）', note:'インサイト（分析）・予約投稿・タイアップラベルが解禁される',
+        detail:'<span class="path">プロフィール右上の≡</span> → <span class="path">設定とアクティビティ</span> → <span class="path">アカウントの種類とツール</span> → <span class="path">プロアカウントに切り替える</span>。個人発信なら<b>「クリエイター」</b>を選ぶ（DMや分析が発信者向け）。カテゴリは後から変更可。料金は完全無料。' },
+      { key:'s3', title:'二段階認証をオンにする', note:'乗っ取られると復旧に数週間かかることも。最初に必ず',
+        detail:'<span class="path">≡</span> → <span class="path">設定とアクティビティ</span> → <span class="path">アカウントセンター</span> → <span class="path">パスワードとセキュリティ</span> → <span class="path">二段階認証</span> → SMSか認証アプリを選択。' },
+      { key:'s4', title:'連絡先の同期をオフにする（任意）', note:'知り合いに「知り合いかも」で出したくない人は必須',
+        detail:'<span class="path">≡</span> → <span class="path">設定とアクティビティ</span> → <span class="path">友達をフォロー・招待する</span> → 連絡先のリンクを<b>オフ</b>。すでに同期済みなら「連絡先の連携を解除」もしておく。' },
+    ]},
+    { title: 'STEP 2｜プロフィールを整える（ここで9割決まる）', items: [
+      { key:'s5', title:'プロフィール写真を設定', note:'一目で「誰か・何の発信か」が分かるもの。円形に切り抜かれる',
+        detail:'顔・ロゴ・愛犬など。<b>円形にトリミングされる</b>ので被写体は中央に。推奨は320×320px以上の正方形。発信テーマと合った雰囲気に。' },
+      { key:'s6', title:'「名前」欄にキーワードを入れる（最大64文字）', note:'名前欄は検索対象。ここで見つけてもらえるかが変わる',
+        detail:'「名前」は@IDとは別欄。<b>ここに書いた言葉で検索にヒットする</b>。<br>「名前＋発信テーマ＋地域」が鉄則。例：<span class="path">ロイ｜宮城のシニア犬の介護記録</span>。「〇〇（本名）」だけは検索で誰にも見つからないのでもったいない。' },
+      { key:'s7', title:'自己紹介文（150文字）を書く', note:'①誰に②どんな悩みを③どう解決 ＋実績。改行して読みやすく',
+        detail:'上限<b>150文字</b>。絵文字で行頭を作り箇条書きにすると読まれる。<br>例：<br>🐾 壊死性脳炎の愛犬ロイと介護の毎日<br>🏥 元こういう仕事／今こう発信<br>📌 保存して見返せる犬の健康ネタ<br>最後に行動（「保存してね」等）を一言。' },
+      { key:'s8', title:'リンクを設定（最大5個）', note:'楽天ROOM・noteなど誘導先を。1個目が一番押される',
+        detail:'<span class="path">プロフィールを編集</span> → <span class="path">リンク</span> → <span class="path">外部リンクを追加</span>。最大5個・並び替え可。表示名も付けられる（「楽天ROOM｜愛用グッズ」など）。' },
+    ]},
+    { title: 'STEP 3｜最初の投稿を出す前に', items: [
+      { key:'s9', title:'発信テーマを3つ以内に絞る', note:'2026年は「テーマの一貫性」がおすすめ表示に直結',
+        detail:'アルゴリズムは「このアカウントは何の人か」を学習する。テーマがバラつくと誰にも刺さらない。<b>「誰の・どんな悩みを解決するか」</b>を1行で言えるまで絞る。' },
+      { key:'s10', title:'同ジャンルの人気アカを10個フォロー', note:'アルゴリズムに自分のジャンルを教える＆ネタ研究',
+        detail:'同ジャンルをフォロー＆その投稿を見ることで、Instagramに「あなたはこの界隈の人」と認識させる。伸びてる投稿の型（冒頭・構成）をストックする研究にもなる。' },
+      { key:'s11', title:'3〜9投稿ためてから告知する', note:'来た人が世界観を判断できる状態にしてからフォローを募る',
+        detail:'プロフィールに来た人は「投稿が数本ある＝ちゃんとした人」で判断する。空っぽの状態で告知すると離脱される。まず3〜9本並べてから拡散・告知を。' },
+      { key:'s12', title:'アカウントステータスの場所を覚える', note:'違反・おすすめ制限を確認できる唯一の公式画面',
+        detail:'<span class="path">≡</span> → <span class="path">設定とアクティビティ</span> → <span class="path">アカウントステータス</span>。ここで「おすすめに表示できないコンテンツ」の有無が分かる。週1で見る習慣を（詳細はNG・救済タブ）。' },
+    ]},
+  ]},
+
+  post: { footer: '<button class="reset-btn" data-reset="post">↺ この投稿のチェックをリセット（次の投稿用）</button>', groups: [
+    { title: 'コンテンツ本体', items: [
+      { key:'p1', title:'オリジナルコンテンツか', badge:'<span class="badge new">2026新</span>', note:'転載・切り抜きまとめは大幅に表示制限される',
+        detail:'2026年5月のアップデートで、<b>他人の投稿を転載・まとめるアカウントは大幅制限</b>。自分で撮影・作成したものを主役に。引用する時は自分の解説や付加価値を必ず足す。' },
+      { key:'p2', title:'他アプリのロゴ（透かし）が入っていない', note:'TikTok・CapCutのロゴ入り動画はおすすめで不利',
+        detail:'ウォーターマーク入り動画はおすすめ表示で不利と公式が明言。<b>公式編集アプリ「Edits」ならロゴなしで書き出せる</b>（💎公式ワザ参照）。' },
+      { key:'p3', title:'冒頭3秒（実は1.7秒）で掴めているか', note:'視聴者は約1.7秒で見る/スクロールを判断する',
+        detail:'冒頭3秒の重みは残り全部より大きい。<b>結論・意外な一言・問いかけ・大きな動き</b>を最初に置く。リールの長さは3分以内が、完走率などをアルゴリズムが読み取りやすい。' },
+      { key:'p4', title:'「人に送りたくなる」要素があるか', badge:'<span class="badge new">最重要</span>', note:'DMシェア（送信）が2026年いちばん強いシグナル',
+        detail:'モセリ氏（Instagram代表）が明言した評価トップ3は <b>①視聴時間 ②いいね率 ③送信率（sends per reach）</b>。中でも<b>DMシェアが新規リーチ最強</b>。「友達に教えたい」共感・お得・保存版ネタが強い。' },
+      { key:'p5', title:'動画に字幕を付けたか', note:'約8割が音なし視聴。字幕なしは離脱率が上がる',
+        detail:'リール編集画面やEditsの<b>「キャプション」で自動字幕</b>を付けられる。文字が小さすぎない・背景に埋もれないかも確認。' },
+      { key:'p6', title:'音源が商用利用OKか確認した', note:'プロアカは使える音源に制限あり',
+        detail:'クリエイター/ビジネスアカウントは音楽ライブラリに<b>「利用不可」表示</b>が出る曲がある。オリジナル音源か、利用可の音源を選ぶ。' },
+    ]},
+    { title: 'キャプション・タグ・alt', items: [
+      { key:'p7', title:'ハッシュタグは5個以内・大中小で組む', badge:'<span class="badge new">新ルール</span>', note:'2025年12月から上限30→5個。付けすぎは逆効果',
+        detail:'黄金比＝<b>ビッグ(10万件超)1〜2個＋ミドル(1万〜10万)2個＋スモール(1万未満/指名タグ)1〜2個</b>。件数はタグを検索窓に入れれば出る。#reels #explore など無関係な汎用タグはパフォーマンスを下げるのでNG（詳細は📐早見表）。' },
+      { key:'p8', title:'キャプション冒頭にキーワードを入れた', note:'最初の1〜2行は検索対象＆「続きを読む」前に見える',
+        detail:'上限<b>2200文字</b>。最初の1〜2行が命。投稿内容を表す言葉を先頭に置く（インスタ内検索の対象）。単語の羅列でなく自然な文章で書くと一貫性が上がる。' },
+      { key:'p9', title:'代替（alt）テキストを設定した', note:'Google検索・発見タブに拾われやすくなる',
+        detail:'投稿前の <span class="path">詳細設定</span> → <span class="path">代替テキストを書く</span>。画像の内容を<b>文章で</b>（例「宮城の公園を散歩する黒いミニピン」）。2025年7月からプロアカの公開投稿は検索エンジンにも載る＝alt文が効く。' },
+      { key:'p10', title:'「いいねして」等の露骨な誘導をしていない', note:'エンゲージメントベイトはおすすめ対象外になる',
+        detail:'「いいねしたら〇〇」「コメントに🔥と書いて」等はおすすめから外される。<b>感想を聞く自然な問いかけ</b>（「あなたの子はどう？」等）はOK。' },
+      { key:'p11', title:'PR案件はタイアップ投稿ラベルをオンに', badge:'<span class="badge law">法律</span>', note:'#PRだけより公式ラベルが安全。非表示は違法',
+        detail:'<span class="path">詳細設定</span> → <span class="path">タイアップ投稿ラベルを追加</span> → オン。ステマ規制（景表法・2023年10月〜）で<b>報酬案件のPR非表示は違法</b>。公式ラベル＋キャプション冒頭にも「PR」と明記が最も安全。#PRは末尾に埋もれると認められないことがある。' },
+    ]},
+    { title: '投稿タイミング', items: [
+      { key:'p12', title:'毎回「同じ曜日・同じ時間」に出す', note:'ピークの30〜45分前が理想。予約投稿で固定できる',
+        detail:'時刻は <span class="path">インサイト</span> → <span class="path">合計フォロワー</span> → <span class="path">最もアクティブな時間</span>で確認（これが最も正確）。一般的な目安は📐早見表の曜日別表を参照。<b>ピーク30〜45分前</b>に出すと、みんなが開いた瞬間もう表示されている状態が作れる。💎予約投稿で固定すると楽。' },
+      { key:'p13', title:'投稿後30分〜1時間アプリに残れる時間か', note:'初速のコメント返信で伸びが変わる',
+        detail:'投稿から24時間、特に最初の数十分の反応の速さが発見タブ入りを左右する。<b>コメントに即返信できる時間帯</b>に投稿する。' },
+    ]},
+  ]},
+
+  daily: { footer: '<p class="all-done" id="dailyDone">🎉 今日のルーティン完了！おつかれさまでした</p><p class="foot-note">※ 毎日のチェックは日付が変わると自動でリセットされます</p>', groups: [
+    { title: '朝（5分）', items: [
+      { key:'d1', title:'昨日の投稿の閲覧数を確認', note:'2026年から指標は「閲覧数（Views）」に統一',
+        detail:'投稿を開いて下の<span class="path">インサイトを見る</span>。伸びた/伸びない理由を1行メモ。<b>投稿後24時間以内の初速</b>が発見タブ入りを決めるので、朝いちで前日分を確認する。' },
+      { key:'d2', title:'ストーリーズを1本上げる', note:'何本上げてもフィード評価に悪影響ゼロ＝ノーリスク',
+        detail:'日常・裏側・進捗など軽くてOK。<b>質問かアンケートのスタンプを1つ</b>入れるとDM・リアクションが増え、フォロワーとの親密度シグナルが上がる（＝発見タブへの第一関門）。' },
+    ]},
+    { title: '昼〜夕方（10分）', items: [
+      { key:'d3', title:'コメントに全部返信する', note:'コメント返信は「会話」として評価される。1時間以内が理想',
+        detail:'絵文字1つより<b>一言足す</b>と相手も返しやすく会話が続く。会話が続くほどその人へのリーチが強くなる。' },
+      { key:'d4', title:'DM（質問・シェア）に返信する', note:'DMは2026年の最重要シグナル。放置しない',
+        detail:'ストーリーズの質問スタンプの回答もDMに届く。<b>DMのやり取り＝最も濃い親密度シグナル</b>。塩対応でもいいので既読スルーにしない。' },
+      { key:'d5', title:'同ジャンル5件にいいね＆一言コメント', note:'定型コピペはスパム判定リスク。毎回変える',
+        detail:'露出と横のつながり作り。<b>短時間の大量いいね・大量フォローは一時ブロックの対象</b>なのでゆっくり。コメントは毎回文言を変える。' },
+    ]},
+    { title: '夜（5分）', items: [
+      { key:'d6', title:'明日のネタを1つメモする', note:'「ネタ切れ」が挫折の最大原因。1日1個ためれば止まらない',
+        detail:'思いついた瞬間にメモ。ストックが5〜10個あると「今日出すものがない」で止まらなくなる。' },
+      { key:'d7', title:'伸びてる他人の投稿を1つ研究', note:'「なぜ伸びた？」を1行で言語化してストック',
+        detail:'冒頭・構成・テーマを分解して「型」を盗む。保存した投稿を見返すのが手っ取り早い。' },
+    ]},
+  ]},
+
+  weekly: { footer: '<button class="reset-btn" data-reset="weekly">↺ 週次チェックをリセット（新しい週用）</button>', groups: [
+    { title: '週1回の振り返り（15分）', items: [
+      { key:'w1', title:'インサイトで今週の4つの数字を記録', note:'閲覧数・シェア数・保存数・フォロワー増減だけでOK',
+        detail:'<b>シェア数と保存数が2026年の伸びのバロメーター</b>。エンゲージメント率＝(いいね+コメント+保存+シェア)÷リーチ×100。目安3〜5%で健全、5%超で優秀（📐早見表）。' },
+      { key:'w2', title:'アカウントステータスを点検（シャドウバン確認）', note:'おすすめ表示制限が付いていないか',
+        detail:'<span class="path">≡</span> → <span class="path">アカウントステータス</span>。制限が付いていたら原因コンテンツを削除→異議申し立て。別アカからタグ検索で自分が「最近」タブに出るかでも確認可（⚠️NG・救済タブ）。' },
+      { key:'w3', title:'一番伸びた投稿の「型」を来週に再利用', note:'伸びた構成・テーマ・冒頭を横展開する',
+        detail:'当たった投稿は1回で終わらせず、切り口を変えてシリーズ化。伸びる型は繰り返し使えるほど貴重。' },
+      { key:'w4', title:'来週の投稿予定を決める（最低週3本）', note:'モセリ氏「理想は毎日、最低でも週3回」',
+        detail:'週1〜2本は<b>非アクティブ判定</b>でおすすめに載りにくくなるリスク。黄金比は<b>リール週3〜4本＋カルーセル2〜3本＋静止画1〜2本</b>。曜日と本数を先に決めると続く。' },
+      { key:'w5', title:'プロフィールを見直す', note:'発信内容とズレていないか・リンク切れがないか',
+        detail:'発信が育つとテーマがずれてくる。名前欄・自己紹介・リンクが今の内容と合っているか点検。' },
+    ]},
+  ]},
+
+  waza: { footer: '<p class="foot-note">※「一度使ったことがある」状態でチェック。全部使えたら中級者卒業です</p>', groups: [
+    { title: '知らないと損する公式機能（全部無料）', items: [
+      { key:'z1', title:'予約投稿で曜日・時間を固定する', note:'公式アプリだけで約1ヶ月先まで予約可。外部ツール不要',
+        detail:'投稿画面の最後 → <span class="path">詳細設定</span> → <span class="path">この投稿を日時指定</span>。現在の20分後〜<b>約29日先</b>まで指定可。プロアカ限定・無料。ベスト時間に自動で出せるので「投稿時間の統一」がラクに実現できる。' },
+      { key:'z2', title:'トライアルリールでテスト配信する', badge:'<span class="badge new">新機能</span>', note:'フォロワー以外にだけ先行公開して反応を試せる',
+        detail:'リール作成画面で<b>「トライアル」</b>を選ぶ。フォロワーには出ず非フォロワーにだけ配信→24時間でインサイト確認、<b>72時間で反応が良ければ自動で全体シェア</b>も設定可。フォロワーを外すので「滑ってもバレない」テストができる。条件：プロアカ＋フォロワー1,000人以上。' },
+      { key:'z3', title:'公式編集アプリ「Edits」を使う', badge:'<span class="badge new">2025新</span>', note:'ウォーターマークなし・AI自動字幕・分析まで全部無料',
+        detail:'Meta公式の無料動画編集アプリ。<b>透かしなしで書き出し</b>・AI自動字幕・ノイズ除去・背景切り抜き・視聴維持率グラフまで。4K/60fps対応。App Store／Google Playで「Edits」を検索。CapCutのロゴ問題もこれで解決。' },
+      { key:'z4', title:'コラボ投稿（共同投稿者）を使う', note:'相手のフォロワーにも同じ投稿が出る＝リーチ2倍',
+        detail:'投稿時 → <span class="path">タグ付け</span> → <span class="path">共同投稿者を招待</span>。相手が承認すると<b>両方のフォロワーのフィードに同じ1投稿が表示</b>され、いいね数も合算。犬アカ同士の相互紹介・コラボに最適。' },
+      { key:'z5', title:'インサイトで「アクティブな時間帯」を確認', note:'一般論より自分のフォロワー専用データが正確',
+        detail:'<span class="path">プロフィール</span> → <span class="path">インサイト</span> → <span class="path">合計フォロワー</span> → <span class="path">最もアクティブな時間</span>。曜日ごとにフォロワーがいる時間が分かる。ここが投稿時間の最終正解。' },
+      { key:'z6', title:'アカウントステータスで健康診断', note:'おすすめ制限の有無を公式が教えてくれる唯一の場所',
+        detail:'<span class="path">≡</span> → <span class="path">アカウントステータス</span>。「おすすめに表示できないコンテンツ」があれば表示され、<b>異議申し立て</b>もここから。伸び悩んだらまずここを見る。' },
+    ]},
+  ]},
+};
+
+/* ================= 早見表（参照専用） ================= */
+const REF_HTML = `
+<p class="intro">投稿中に「あれ何ピクセルだっけ？」を全部ここで解決。ググらなくていいように公式仕様をまとめました。</p>
+
+<div class="ref-title">📏 画像・動画サイズ</div>
+<div class="ref-card"><table class="ref">
+  <tr><th>種類</th><th>サイズ(px)</th><th>比率</th></tr>
+  <tr><td>リール</td><td class="hl">1080×1920</td><td>9:16（縦）</td></tr>
+  <tr><td>フィード（縦・推奨）</td><td class="hl">1080×1350</td><td>4:5</td></tr>
+  <tr><td>フィード（正方形）</td><td>1080×1080</td><td>1:1</td></tr>
+  <tr><td>ストーリーズ</td><td>1080×1920</td><td>9:16</td></tr>
+  <tr><td>プロフィール画像</td><td>320×320以上</td><td>1:1（円形）</td></tr>
+</table></div>
+<p class="ref-note">・リールは<b>1080×1920で書き出す</b>（4Kは圧縮でかえって劣化）。<br>・リールの文字は<b>上220px・下450pxを避けて</b>配置（UIボタンで隠れる）。<br>・フィードは縦4:5が一番画面を占有できて有利。</p>
+
+<div class="ref-title">✏️ 文字数の上限</div>
+<div class="ref-card"><table class="ref">
+  <tr><th>場所</th><th>上限</th></tr>
+  <tr><td>ユーザーネーム(@ID)</td><td>30文字（半角英数 . _ のみ）</td></tr>
+  <tr><td>名前</td><td>64文字</td></tr>
+  <tr><td>プロフィール</td><td>150文字</td></tr>
+  <tr><td>キャプション</td><td class="hl">2200文字</td></tr>
+  <tr><td>ハッシュタグ</td><td>1個150字・<b>最大5個</b></td></tr>
+</table></div>
+
+<div class="ref-title"># ハッシュタグ5個の組み方</div>
+<div class="ref-card"><table class="ref">
+  <tr><th>種類</th><th>投稿件数</th><th>個数/役割</th></tr>
+  <tr><td>ビッグ</td><td>10万件超</td><td>1〜2個／大きな入口</td></tr>
+  <tr><td>ミドル</td><td>1万〜10万件</td><td class="hl">2個／狙った層に届く</td></tr>
+  <tr><td>スモール</td><td>1万件未満・指名タグ</td><td>1〜2個／上位固定・コミュニティ</td></tr>
+</table></div>
+<p class="ref-note">・件数はタグを検索窓に入れれば表示される。<br>・<b>#reels #explore #followme など無関係タグはNG</b>（パフォーマンス低下）。<br>・キャプション内容と関連するタグだけを厳選。</p>
+
+<div class="ref-title">🕒 曜日別 ベスト投稿時間</div>
+<div class="ref-card"><table class="ref">
+  <tr><th>曜日</th><th>狙い目の時間</th></tr>
+  <tr><td>月</td><td>7-8時 / 20-21時</td></tr>
+  <tr><td>火</td><td>6:30-7:30 / 12時 / 20-22時</td></tr>
+  <tr><td>水</td><td>19-21時</td></tr>
+  <tr><td>木</td><td>7-8時 / 20-22時</td></tr>
+  <tr><td>金</td><td>17-19時</td></tr>
+  <tr><td>土</td><td>8-10時 / 20-22時</td></tr>
+  <tr><td>日</td><td class="hl">9-11時（最も強い）</td></tr>
+</table></div>
+<p class="ref-note">・<b>ピークの30〜45分前</b>に投稿するのがコツ。<br>・リール（動画）は夜20時以降が伸びやすい。<br>・最終的には自分のインサイト（アクティブな時間帯）が正解。</p>
+
+<div class="ref-title">📊 エンゲージメント率の目安</div>
+<div class="ref-card"><table class="ref">
+  <tr><th>項目</th><th>目安</th></tr>
+  <tr><td>計算式</td><td>(いいね+コメント+保存+シェア)÷リーチ×100</td></tr>
+  <tr><td>Instagram平均</td><td>約3.5%</td></tr>
+  <tr><td>健全ライン</td><td class="hl">3〜5%（5%超で優秀）</td></tr>
+  <tr><td>ストーリーズ閲覧率</td><td>フォロワーの10〜20%で健全</td></tr>
+</table></div>
+
+<div class="ref-title">💰 収益化の条件（2026）</div>
+<div class="ref-card"><table class="ref">
+  <tr><th>方法</th><th>条件</th></tr>
+  <tr><td>アフィリエイト・物販<br>(楽天ROOM等)</td><td class="hl">フォロワー数不問</td></tr>
+  <tr><td>PR案件</td><td>フォロワー数不問（まず1,000人が目安）</td></tr>
+  <tr><td>サブスク</td><td>プロアカ・フォロワー不問</td></tr>
+  <tr><td>ライブバッジ(投げ銭)</td><td>18歳以上・プロアカ</td></tr>
+  <tr><td>ボーナス</td><td>Metaからの招待制（期間限定）</td></tr>
+</table></div>
+<p class="ref-note">フォロワー5,000人でもアフィリ＋ライブバッジで月数千〜1万円が現実的な目安。まずは物販/アフィリが最短。</p>
+`;
+
+/* ================= NG・救済 ================= */
+const NG_HTML = `
+<div class="group-title">やるとアカウントが不利になること</div>
+<div class="ng-card"><h3>🚫 ハッシュタグの大量付け</h3><p>上限5個に変更（2025年12月〜）。Metaは「過剰なハッシュタグはパフォーマンス低下につながる」と明言。30個時代の癖は捨てて、関連する5個を厳選。</p></div>
+<div class="ng-card"><h3>🚫 転載・まとめ投稿</h3><p>2026年5月アップデートで転載アカは大幅制限。スクショ転載・切り抜きまとめはNG。引用するなら自分の解説を主役に。</p></div>
+<div class="ng-card"><h3>🚫 他アプリのロゴ入り動画</h3><p>TikTok・CapCutの透かし入りリールはおすすめで不利。公式アプリ「Edits」で透かしなし書き出しを（💎公式ワザ）。</p></div>
+<div class="ng-card"><h3>🚫 エンゲージメントベイト</h3><p>「いいねしたら〇〇」「コメントに🔥」等の露骨な誘導はおすすめ対象外。感想を聞く自然な問いかけはOK。</p></div>
+<div class="ng-card"><h3>🚫 自動化ツール・フォロワー購入</h3><p>自動いいね/フォロー・フォロワー購入はアカウント停止リスク。短時間の大量フォロー・大量いいねも一時ブロック対象。</p></div>
+<div class="ng-card"><h3>🚫 PR表記なしの案件投稿</h3><p>ステマ規制（景表法・2023年10月施行）で報酬案件のPR非表示は違法。タイアップ投稿ラベル＋冒頭に「PR」明記を必ず。</p></div>
+<div class="ng-card"><h3>⚠️ 伸びない投稿の削除の繰り返し</h3><p>削除・再投稿の連発はスパム的挙動と見なされることがある。基本は消さずに次でリカバリー。</p></div>
+
+<div class="group-title">「シャドウバンかな？」と思ったら</div>
+<div class="ng-card rescue"><h3>① まず確認</h3><p>別アカ（フォロー外）で自分の投稿タグを検索し「最近」タブに出るか確認。もしくは<b>設定→アカウントステータス</b>で「おすすめに表示できないコンテンツ」の有無を見る。これが公式で一番確実。</p></div>
+<div class="ng-card rescue"><h3>② 原因を消す</h3><p>直近で付けた不自然な/禁止ハッシュタグを削除。ガイドラインすれすれの投稿があれば下書きに戻す。心当たりのある投稿を編集。</p></div>
+<div class="ng-card rescue"><h3>③ 待つ・申し立てる</h3><p>いいね・フォロー等のアクションを止めて<b>48時間ほど様子見</b>すると自然解除されることが多い。制限が続くならアカウントステータスから<b>異議申し立て</b>。</p></div>
+`;
+
+/* ================= 描画 ================= */
+const STORAGE = "insta-checklist-v2";
+// file://やプライベートモードでlocalStorageが例外を投げても描画を止めないよう保護
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE) || "{}"); }
+  catch (e) { return {}; }
+}
+let state = loadState();
+function save() {
+  try { localStorage.setItem(STORAGE, JSON.stringify(state)); }
+  catch (e) { /* 保存できない環境でもアプリは動作継続 */ }
+}
+
+// 毎日タブ：日付が変わったらリセット
+const today = new Date().toLocaleDateString("ja-JP");
+if (state._dailyDate !== today) {
+  Object.keys(state).forEach(k => { if (k[0] === "d") delete state[k]; });
+  state._dailyDate = today;
+}
+
+function itemHTML(it) {
+  return `<div class="item">
+    <label class="item-main">
+      <input type="checkbox" data-key="${it.key}" ${state[it.key] ? "checked" : ""}>
+      <span class="checkbox"></span>
+      <span class="item-body">
+        <span class="item-title">${it.title}${it.badge || ""}</span>
+        <span class="item-note">${it.note}</span>
+      </span>
+    </label>
+    ${it.detail ? `<button class="detail-toggle" type="button">詳しい手順を見る ▾</button><div class="detail">${it.detail}</div>` : ""}
+  </div>`;
+}
+
+function renderChecklist(id, cfg) {
+  let html = `<div class="progress-wrap"><div class="progress-bar"><div class="progress-fill"></div></div><span class="progress-label">0%</span></div>`;
+  if (id === "daily") html = `<p class="daily-date" id="dailyDate">今日：${today}</p>` + html;
+  cfg.groups.forEach(g => {
+    html += `<div class="group-title">${g.title}</div><div class="card">`;
+    g.items.forEach(it => html += itemHTML(it));
+    html += `</div>`;
+  });
+  html += cfg.footer || "";
+  document.getElementById(id).innerHTML = html;
+}
+
+Object.keys(CHECKLISTS).forEach(id => renderChecklist(id, CHECKLISTS[id]));
+document.getElementById("ref").innerHTML = REF_HTML;
+document.getElementById("ng").innerHTML = NG_HTML;
+
+/* 進捗バー */
+function updateProgress(section) {
+  const bar = section.querySelector(".progress-fill");
+  if (!bar) return;
+  const inputs = section.querySelectorAll(".item-main input");
+  const done = [...inputs].filter(i => i.checked).length;
+  const pct = inputs.length ? Math.round(done / inputs.length * 100) : 0;
+  bar.style.width = pct + "%";
+  section.querySelector(".progress-label").textContent = pct + "%";
+  if (section.id === "daily") {
+    const dd = document.getElementById("dailyDone");
+    if (dd) dd.classList.toggle("show", pct === 100);
+  }
+}
+
+/* イベント */
+document.querySelectorAll(".item-main input").forEach(input => {
+  input.addEventListener("change", () => {
+    state[input.dataset.key] = input.checked;
+    save();
+    updateProgress(input.closest("section"));
+  });
+});
+document.querySelectorAll(".detail-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const d = btn.nextElementSibling;
+    const open = d.classList.toggle("open");
+    btn.textContent = open ? "閉じる ▴" : "詳しい手順を見る ▾";
+  });
+});
+document.querySelectorAll(".reset-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const section = document.getElementById(btn.dataset.reset);
+    section.querySelectorAll(".item-main input").forEach(input => {
+      input.checked = false;
+      delete state[input.dataset.key];
+    });
+    save();
+    updateProgress(section);
+  });
+});
+
+/* タブ切り替え */
+const tabs = document.querySelectorAll(".tab");
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    document.querySelectorAll("main section").forEach(s => s.classList.remove("show"));
+    document.getElementById(tab.dataset.tab).classList.add("show");
+    window.scrollTo(0, 0);
+  });
+});
+
+document.querySelectorAll("main section").forEach(updateProgress);
+</script>
+</body>
+</html>
